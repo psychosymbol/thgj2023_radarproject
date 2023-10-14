@@ -139,6 +139,8 @@ public class SonarPing : MonoBehaviour
 
                 RadarController.instance.TestInsideCircle(transform.position, current_radius);
 
+                RadarController.instance.flashHide();
+
                 UpdateCircle();
 
 
