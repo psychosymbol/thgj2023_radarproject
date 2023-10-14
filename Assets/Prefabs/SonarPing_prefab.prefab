@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4701319128695808043}
   - component: {fileID: 4701319128695808042}
   - component: {fileID: 4701319128695808046}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SonarPing_prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -146,5 +146,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   min_radius: 0
   max_radius: 0
+  current_radius: 0
   lineWidth: 0
   division: 0
+  isPinging: 0
+  ping_duration: 0
+  current_duration: 0
+  interval: 0.1
+  interval_time: 0
+  ping_count: 1
+  current_ping_count: 0

@@ -11,7 +11,7 @@ public class RadarController : MonoBehaviour
 
     public float lineWidth = 0.1f;
     public Color lineColor = Color.white;
-    public int sonarDivision = 50;
+    public int circleDivision = 50;
 
     public float pingDuration = 0.5f;
     public float pingInterval = 0.1f;
@@ -19,12 +19,16 @@ public class RadarController : MonoBehaviour
     public float min_radius = 1;
     public float max_radius = 5;
 
+    public List<ScanPattern> scanPatterns = new List<ScanPattern>();
 
     [Header("Prefabs")]
     public GameObject line_prefab;
     public GameObject sonarping_prefab;
 
     [Header("RadarUI")]
+
+    public List<LineRenderer> lineRenderers = new List<LineRenderer>();
+
     public LineRenderer LT;
     public LineRenderer RT;
     public LineRenderer LB;
@@ -40,8 +44,37 @@ public class RadarController : MonoBehaviour
 
     [Header("Obj ref")]
     public Transform sonar_group;
-
     public List<Transform> testObjects = new List<Transform>();
+
+    bool hideFlag = false;
+
+    public int hideFrame = 4;
+    public int hideFrameCount = 0;
+
+    void ShowUI()
+    {
+        for (int i = 0; i < lineRenderers.Count; i++)
+        {
+            lineRenderers[i].startColor = new Color(lineRenderers[i].startColor.r, lineRenderers[i].startColor.g, lineRenderers[i].startColor.b, 1);
+            lineRenderers[i].endColor = new Color(lineRenderers[i].startColor.r, lineRenderers[i].startColor.g, lineRenderers[i].startColor.b, 1);
+        }
+    }
+
+    void HideUI()
+    {
+        for (int i = 0; i < lineRenderers.Count; i++)
+        {
+            lineRenderers[i].startColor = new Color(lineRenderers[i].startColor.r, lineRenderers[i].startColor.g, lineRenderers[i].startColor.b, 0);
+            lineRenderers[i].endColor = new Color(lineRenderers[i].startColor.r, lineRenderers[i].startColor.g, lineRenderers[i].startColor.b, 0);
+        }
+    }
+
+    public void flashHide()
+    {
+        hideFrameCount = 0;
+        hideFlag = true;
+        HideUI();
+    }
 
     public void TestInsideCircle(Vector3 pos, float radius)
     {
@@ -52,7 +85,7 @@ public class RadarController : MonoBehaviour
 
             //(x-center_x)^2 + (y - center_y)^2 < radius^2
 
-            if (Mathf.Pow(t.position.x - pos.x,2) + Mathf.Pow(t.position.y - pos.y, 2)<Mathf.Pow(radius,2))
+            if (Mathf.Pow(t.position.x - pos.x, 2) + Mathf.Pow(t.position.y - pos.y, 2) < Mathf.Pow(radius, 2))
             {
                 t.GetComponent<SpriteRenderer>().color = Color.red;
             }
@@ -108,15 +141,31 @@ public class RadarController : MonoBehaviour
 
 
     [ContextMenu("TestCreateCircle")]
-    public void TestCreateCircle()
+    public void TestCreateCircle(int index)
     {
-        var clone = Instantiate(sonarping_prefab, sonar_group);
+        var patterns = scanPatterns[index];
 
-        var sonarping = clone.GetComponent<SonarPing>();
+        for (int i = 0; i < patterns.pingSettings.Count; i++)
+        {
+            var pattern = patterns.pingSettings[i];
 
-        sonarping.SetUp(new Vector3(0, 0, -1), min_radius, max_radius, lineWidth, sonarDivision, pingDuration, pingInterval, 2);
+            var clone = Instantiate(sonarping_prefab, sonar_group);
 
+            var sonarping = clone.GetComponent<SonarPing>();
 
+            //sonarping.SetUp(new Vector3(0, 0, -1), min_radius, max_radius, lineWidth, circleDivision, pingDuration, pingInterval);
+
+            sonarping.SetUp(
+                pattern.pos,
+                pattern.min_radius,
+                pattern.max_radius,
+                pattern.lineWidth,
+                pattern.circleDivision,
+                pattern.duration,
+                pattern.interval
+                );
+
+        }
     }
 
     // Start is called before the first frame update
@@ -130,7 +179,22 @@ public class RadarController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            TestCreateCircle();
+            TestCreateCircle(0);
         }
+
+        if (hideFlag)
+        {
+
+            hideFrameCount++;
+
+            if (hideFrameCount > hideFrame)
+            {
+
+                ShowUI();
+                hideFlag = false;
+
+            }
+        }
+
     }
 }
