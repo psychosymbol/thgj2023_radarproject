@@ -141,8 +141,14 @@ public class RadarController : MonoBehaviour
 
 
     [ContextMenu("TestCreateCircle")]
-    public void TestCreateCircle(int index)
+    public void TestCreateCircle(int index = -1)
     {
+
+        if (index == -1)
+        {
+            index = Random.Range(0, 6);
+        }
+
         var patterns = scanPatterns[index];
 
         for (int i = 0; i < patterns.pingSettings.Count; i++)
@@ -179,7 +185,7 @@ public class RadarController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            TestCreateCircle(0);
+            TestCreateCircle();
         }
 
         if (hideFlag)
