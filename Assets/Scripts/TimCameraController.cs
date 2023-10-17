@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraController : MonoBehaviour
+public class TimCameraController : MonoBehaviour
 {
     public float maxAngleX = 10;
     public float maxAngleY = 5;
