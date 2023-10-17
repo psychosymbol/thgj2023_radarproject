@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 59080967988050515}
   - component: {fileID: 59080967988050514}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RadarLine_prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
