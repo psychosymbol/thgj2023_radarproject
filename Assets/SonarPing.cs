@@ -29,8 +29,12 @@ public class SonarPing : MonoBehaviour
     public int ping_count = 1;
     public int current_ping_count = 0;
 
-    public void SetUp(Vector3 pos, float min_radius, float max_radius, float lineWidth, int division, float pingDuration, float ping_interval, int loop = 1)
+    public Color color = Color.white;
+
+    public void SetUp(Vector3 pos, float min_radius, float max_radius, float lineWidth, int division, float pingDuration, float ping_interval, Color color ,int loop = 1)
     {
+        this.color = color;
+
         this.ping_count = loop;
         current_ping_count = 0;
 
@@ -68,6 +72,10 @@ public class SonarPing : MonoBehaviour
         }
         lr.startWidth = lineWidth;
         lr.endWidth = lineWidth;
+
+        lr.startColor = color;
+        lr.endColor = color;
+
     }
 
     [ContextMenu("StartPing")]

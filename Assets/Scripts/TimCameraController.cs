@@ -13,7 +13,7 @@ public class TimCameraController : MonoBehaviour
             + new Vector3(-0.5f, -0.5f, 0)) //set the value to make the center of the screen become zero position
             * 2; //multiplyer to make the value we get round up to 1 ?
 
-        Debug.Log("try to base on middle screen as center : " + middleCenterBasedMouse);
+        //Debug.Log("try to base on middle screen as center : " + middleCenterBasedMouse);
 
         gameObject.transform.eulerAngles = new Vector3(
             (-middleCenterBasedMouse.y * maxAngleX),

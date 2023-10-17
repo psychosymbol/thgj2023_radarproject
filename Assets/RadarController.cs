@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using UnityEngine;
 
 public class RadarController : MonoBehaviour
@@ -15,6 +16,8 @@ public class RadarController : MonoBehaviour
 
     public float pingDuration = 0.5f;
     public float pingInterval = 0.1f;
+
+    public float pingDelay = 0.5f;
 
     public float min_radius = 1;
     public float max_radius = 5;
@@ -50,6 +53,16 @@ public class RadarController : MonoBehaviour
 
     public int hideFrame = 4;
     public int hideFrameCount = 0;
+
+
+    public ScanPattern ping_pattern;
+    public ScanPattern distract_pattern;
+
+    float currentTime = 0f;
+    int currentPattern = 0;
+
+    bool isPinging = false;
+    bool stopPingFlag = false;
 
     void ShowUI()
     {
@@ -143,7 +156,6 @@ public class RadarController : MonoBehaviour
     [ContextMenu("TestCreateCircle")]
     public void TestCreateCircle(int index = -1)
     {
-
         if (index == -1)
         {
             index = Random.Range(0, 6);
@@ -151,6 +163,13 @@ public class RadarController : MonoBehaviour
 
         var patterns = scanPatterns[index];
 
+        Ping(patterns, Color.green);
+
+    }
+
+    public void Ping(ScanPattern patterns, Color color)
+    {
+        Debug.Log("ping");
         for (int i = 0; i < patterns.pingSettings.Count; i++)
         {
             var pattern = patterns.pingSettings[i];
@@ -161,16 +180,19 @@ public class RadarController : MonoBehaviour
 
             //sonarping.SetUp(new Vector3(0, 0, -1), min_radius, max_radius, lineWidth, circleDivision, pingDuration, pingInterval);
 
+            var newPos = new Vector3(pattern.pos.x, pattern.pos.y, -0.5f);
+
             sonarping.SetUp(
-                pattern.pos,
+                //pattern.pos,
+                newPos,
                 pattern.min_radius,
                 pattern.max_radius,
                 pattern.lineWidth,
                 pattern.circleDivision,
                 pattern.duration,
-                pattern.interval
+                pattern.interval,
+                color
                 );
-
         }
     }
 
@@ -185,8 +207,53 @@ public class RadarController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            TestCreateCircle();
+            //TestCreateCircle();
+
+            if (!isPinging)
+            {
+                ping_pattern = scanPatterns[0];
+                distract_pattern = scanPatterns[1];
+
+                StartPing();
+            }
+            else
+            {
+                StopPing();
+            }
+
         }
+
+
+        // ping spawn control
+
+        if (isPinging)
+        {
+            currentTime += Time.deltaTime;
+
+            if (currentTime > (pingDuration + pingDelay))
+            {
+                if (stopPingFlag)
+                {
+                    isPinging = false;
+                }
+                else
+                {
+                    switch (currentPattern)
+                    {
+                        case 0:
+                            currentPattern = 1;
+                            break;
+                        case 1:
+                            currentPattern = 0;
+                            break;
+                    }
+                    SpawnNextPing();
+                }
+                currentTime -= (pingDuration + pingDelay);
+            }
+
+        }
+
 
         if (hideFlag)
         {
@@ -201,6 +268,32 @@ public class RadarController : MonoBehaviour
 
             }
         }
-
     }
+
+    void StartPing()
+    {
+        isPinging = true;
+        SpawnNextPing();
+        currentTime = 0;
+        stopPingFlag = false;
+    }
+    void StopPing()
+    {
+        stopPingFlag = true;
+    }
+
+    void SpawnNextPing()
+    {
+        switch (currentPattern)
+        {
+            case 0:
+                Ping(ping_pattern, Color.green);
+                break;
+            case 1:
+                Ping(distract_pattern, Color.red);
+                break;
+        }
+    }
+
+
 }

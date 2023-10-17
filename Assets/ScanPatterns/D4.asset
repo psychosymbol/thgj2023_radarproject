@@ -15,28 +15,28 @@ MonoBehaviour:
   pingSettings:
   - pos: {x: -3, y: 3, z: -1}
     min_radius: 1
-    max_radius: 2.5
+    max_radius: 2
     lineWidth: 0.05
     circleDivision: 50
     duration: 0.5
     interval: 0.1
   - pos: {x: 3, y: -3, z: -1}
     min_radius: 1
-    max_radius: 2.5
+    max_radius: 2
     lineWidth: 0.05
     circleDivision: 50
     duration: 0.5
     interval: 0.1
   - pos: {x: 3, y: 3, z: -1}
     min_radius: 1
-    max_radius: 2.5
+    max_radius: 2
     lineWidth: 0.05
     circleDivision: 50
     duration: 0.5
     interval: 0.1
   - pos: {x: -3, y: -3, z: -1}
     min_radius: 1
-    max_radius: 2.5
+    max_radius: 2
     lineWidth: 0.05
     circleDivision: 50
     duration: 0.5

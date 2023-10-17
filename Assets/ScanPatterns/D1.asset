@@ -15,7 +15,7 @@ MonoBehaviour:
   pingSettings:
   - pos: {x: 0, y: 0, z: -1}
     min_radius: 1
-    max_radius: 5
+    max_radius: 2
     lineWidth: 0.05
     circleDivision: 50
     duration: 0.5
