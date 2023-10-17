@@ -208,19 +208,7 @@ public class RadarController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             //TestCreateCircle();
-
-            if (!isPinging)
-            {
-                ping_pattern = scanPatterns[0];
-                distract_pattern = scanPatterns[1];
-
-                StartPing();
-            }
-            else
-            {
-                StopPing();
-            }
-
+            TogglePingStatus();
         }
 
 
@@ -267,6 +255,20 @@ public class RadarController : MonoBehaviour
                 hideFlag = false;
 
             }
+        }
+    }
+    public void TogglePingStatus()
+    {
+        if (!isPinging)
+        {
+            ping_pattern = scanPatterns[0];
+            distract_pattern = scanPatterns[1];
+
+            StartPing();
+        }
+        else
+        {
+            StopPing();
         }
     }
 
