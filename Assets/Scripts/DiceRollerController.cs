@@ -15,18 +15,19 @@ public class DiceRollerController : MonoBehaviour
     public int currentFace = 0;
     public int currentRotation = 0;
 
-    public void changeDiceFace(int faceNumber)
+    public DR_STATE drState;
+    public GameManager.DR_TYPE drType;
+
+    public virtual void changeDiceFace(int faceNumber)
     {
         diceAnim.SetInteger("DiceFace", faceNumber);
         SetButtonPressed(faceNumber);
 
         // important!
         currentFace = faceNumber;
-
-
     }
 
-    public void randomDiceFace()
+    public virtual void randomDiceFace()
     {
         int randombullshit = Random.Range(1, 7);
         diceAnim.SetInteger("DiceFace", randombullshit);
@@ -64,11 +65,22 @@ public class DiceRollerController : MonoBehaviour
     }
 
 
-    private void Start()
+    protected void Start()
     {
         // set default on start
 
         changeDiceFace(1);
     }
 
+    public enum DR_STATE
+    {
+        REST,
+        CAM,
+        SET
+    }
+
+    public void SetDRState(DR_STATE state)
+    {
+        drState = state;
+    }
 }

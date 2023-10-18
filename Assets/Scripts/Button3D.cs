@@ -8,7 +8,6 @@ public class Button3D : MonoBehaviour
 {
     private void OnMouseDown()
     {
-        Debug.Log("mouse clicked");
         onClick.Invoke();
     }
 
