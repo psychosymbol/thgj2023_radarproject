@@ -44,6 +44,7 @@ public class DiceRollerController : MonoBehaviour
 
     public void SetButtonPressed(int faceNumber)
     {
+        AudioManager.instance.PlaySound("sfx_click", AudioManager.Chanel.SFX_1);
 
         foreach (var t in diceButton)
         {

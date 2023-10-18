@@ -7,8 +7,11 @@ public class RadarGridController : MonoBehaviour
 
     public List<Transform> gridGroups = new List<Transform>();
     public float gridHeight = 9;
-
     public float gridMovingSpeed = 1;
+
+    public float descendUnit = 0;
+
+    public List<Transform> stations = new List<Transform>();
 
     // Start is called before the first frame update
     void Start()
@@ -37,6 +40,8 @@ public class RadarGridController : MonoBehaviour
         var speed = gridMovingSpeed;
         var dt = Time.deltaTime;
 
+        descendUnit += speed * dt;
+
         for (int i = 0; i < gridGroups.Count; i++)
         {
             var gridGroup = gridGroups[i];
@@ -52,6 +57,20 @@ public class RadarGridController : MonoBehaviour
                 gridGroup.position.x,
                 newY,
                 gridGroup.position.z
+                );
+
+        }
+
+        for (int i = 0; i < stations.Count; i++)
+        {
+            var station = stations[i];
+
+            var newY = station.position.y + speed * dt;
+
+            station.position = new Vector3(
+                station.position.x,
+                newY,
+                station.position.z
                 );
 
         }

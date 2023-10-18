@@ -41,6 +41,9 @@ public class DiceRollerController_Broke : DiceRollerController
     public override void randomDiceFace()
     {
         if (isPressed) return;
+
+        AudioManager.instance.PlaySound("sfx_click", AudioManager.Chanel.SFX_1);
+
         isPressed = true;
         randomTime = 0;
         randomTime_interval = 0;

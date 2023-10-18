@@ -137,7 +137,19 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        TweenHandle(!descending, () => { });
+        var _descending = !descending;
+
+        AudioManager.instance.PlaySound("sfx_start", AudioManager.Chanel.SFX_1);
+        if (_descending)
+        {
+            AudioManager.instance.PlaySound("sfx_machineloop", AudioManager.Chanel.ELEVATOR_LOOP); // loop channel
+        }
+        else
+        {
+            AudioManager.instance.StopSound(AudioManager.Chanel.ELEVATOR_LOOP); // loop channel
+        }
+
+        TweenHandle(_descending, () => { });
     }
 
     public void StartDescending()
@@ -413,6 +425,8 @@ public class GameManager : MonoBehaviour
             ToSet1_Scan(dr);
             SetScanDR(dr.drType);
             SetSelectedDR(DR_TYPE.NONE);
+
+            AudioManager.instance.PlaySound("sfx_click", AudioManager.Chanel.SFX_1);
         }
 
     }
@@ -432,6 +446,7 @@ public class GameManager : MonoBehaviour
             ToSet2_Distract(dr);
             SetDistractDR(dr.drType);
             SetSelectedDR(DR_TYPE.NONE);
+            AudioManager.instance.PlaySound("sfx_click", AudioManager.Chanel.SFX_1);
         }
 
 
@@ -460,6 +475,9 @@ public class GameManager : MonoBehaviour
 
     public void StartDRTerminalFlash()
     {
+
+        AudioManager.instance.PlaySound("sfx_incorrect", AudioManager.Chanel.SFX_1);
+
         flashLightSwitch = true;
         lightTime = 0;
         lightTime_interval = 0;

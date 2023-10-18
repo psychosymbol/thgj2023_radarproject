@@ -281,9 +281,11 @@ public class RadarController : MonoBehaviour
         {
             case 0:
                 Ping(ping_pattern, Color.green);
+                AudioManager.instance.PlaySound("sfx_sonar1", AudioManager.Chanel.SONAR);
                 break;
             case 1:
                 Ping(distract_pattern, Color.red);
+                AudioManager.instance.PlaySound("sfx_sonar2", AudioManager.Chanel.SONAR);
                 break;
         }
     }
