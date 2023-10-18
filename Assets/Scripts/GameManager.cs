@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
     public float descendSpeed = 24; //Conventional submarines have maximum submerged speeds of 16 to 24 knots (8.x-12.x m/s)
     public float currentSpeed = 0;
 
-    public float speedToUnit = 0.1f;
+    public float depthToUnit = 0.1f;
 
     public bool descending = false;
     public bool released = false;
@@ -54,6 +54,9 @@ public class GameManager : MonoBehaviour
     bool isLit = false;
     float lightTime;
     float lightTime_interval;
+
+    //docking
+    bool dockingPreparing = false;
 
     private void Awake()
     {
@@ -100,7 +103,6 @@ public class GameManager : MonoBehaviour
 
 
         //flash
-
         if (flashLightSwitch)
         {
             lightTime += dt;
@@ -125,6 +127,7 @@ public class GameManager : MonoBehaviour
         UpdateText();
     }
 
+    public StationController nextStation = null;
 
     //func
     public void ToggleDescendingStatus()
@@ -143,6 +146,11 @@ public class GameManager : MonoBehaviour
         if (_descending)
         {
             AudioManager.instance.PlaySound("sfx_machineloop", AudioManager.Chanel.ELEVATOR_LOOP); // loop channel
+
+            //checking for next docking station
+
+            var nextStation = StationManager.instance.GetNextDockingable();
+            this.nextStation = nextStation;
         }
         else
         {
@@ -152,30 +160,30 @@ public class GameManager : MonoBehaviour
         TweenHandle(_descending, () => { });
     }
 
-    public void StartDescending()
-    {
-        if (isDRTweening) return;
-        if (!bothScanFlag)
-        {
-            StartDRTerminalFlash();
-            return;
-        }
-
-        TweenHandle(true, () => { });
-
-    }
-
-    public void StopDescending()
-    {
-        if (isDRTweening) return;
-        if (!bothScanFlag)
-        {
-            StartDRTerminalFlash();
-            return;
-        }
-
-        TweenHandle(false, () => { });
-    }
+    // public void StartDescending()
+    // {
+    //     if (isDRTweening) return;
+    //     if (!bothScanFlag)
+    //     {
+    //         StartDRTerminalFlash();
+    //         return;
+    //     }
+    // 
+    //     TweenHandle(true, () => { });
+    // 
+    // }
+    // 
+    // public void StopDescending()
+    // {
+    //     if (isDRTweening) return;
+    //     if (!bothScanFlag)
+    //     {
+    //         StartDRTerminalFlash();
+    //         return;
+    //     }
+    // 
+    //     TweenHandle(false, () => { });
+    // }
 
     public void Descend()
     {

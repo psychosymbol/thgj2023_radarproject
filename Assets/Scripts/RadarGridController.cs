@@ -9,14 +9,28 @@ public class RadarGridController : MonoBehaviour
     public float gridHeight = 9;
     public float gridMovingSpeed = 1;
 
-    public float descendUnit = 0;
+    public float totalDescendUnit = 0;
 
     public List<Transform> stations = new List<Transform>();
+
+    public static RadarGridController instance;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        //totalDescendUnit = GameManager.instance.currentDepth * GameManager.instance.depthToUnit;
     }
 
     // Update is called once per frame
@@ -35,12 +49,12 @@ public class RadarGridController : MonoBehaviour
         }
 
         //gridMovingSpeed = Mathf.InverseLerp(0, GameManager.instance.descendSpeed, GameManager.instance.currentSpeed);
-        gridMovingSpeed = GameManager.instance.currentSpeed * GameManager.instance.speedToUnit;
+        gridMovingSpeed = GameManager.instance.currentSpeed * GameManager.instance.depthToUnit;
 
         var speed = gridMovingSpeed;
         var dt = Time.deltaTime;
 
-        descendUnit += speed * dt;
+        totalDescendUnit += speed * dt;
 
         for (int i = 0; i < gridGroups.Count; i++)
         {
