@@ -70,25 +70,31 @@ public class GameManager : MonoBehaviour
         currentDepth += currentSpeed * Time.deltaTime;
         depthText.text = currentDepth.ToString("f0");
 
-        if (Descending)
-            Descend();
+        if (!released)
+        {
+            if (descending)
+                Descend();
+            else
+                Stop();
+        }
         else
-            Stop();
+            currentSpeed += Time.deltaTime * 10;
     }
 
-    public float currentDepth = 0;
+    public float currentDepth = 250;
     public float descendSpeed = 24; //Conventional submarines have maximum submerged speeds of 16 to 24 knots (8.x-12.x m/s)
     public float currentSpeed = 0;
 
     //public float 
 
-    public bool Descending = false;
+    public bool descending = false;
+    public bool released = false;
     public TextMeshProUGUI depthText;
 
     //func
     public void toggleDescendingStatus()
     {
-        Descending = !Descending;
+        descending = !descending;
     }
     public void Descend()
     {

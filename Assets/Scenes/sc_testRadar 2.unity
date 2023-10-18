@@ -5823,10 +5823,11 @@ MonoBehaviour:
   distractLight: {fileID: 1292962740}
   mat_on: {fileID: 2100000, guid: fe216b7abec341148933c8be6049558a, type: 2}
   mat_off: {fileID: 2100000, guid: 485647c666cc4734cbc3c6c9ed7dc1a3, type: 2}
-  currentDepth: 0
+  currentDepth: 250
   descendSpeed: 24
   currentSpeed: 0
-  Descending: 0
+  descending: 0
+  released: 0
   depthText: {fileID: 1324877947}
   selectedDR: 0
   scanDR: 0
@@ -8287,7 +8288,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1976007500
 Transform:
   m_ObjectHideFlags: 0
