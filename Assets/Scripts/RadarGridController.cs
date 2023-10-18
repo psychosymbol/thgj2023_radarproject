@@ -8,7 +8,7 @@ public class RadarGridController : MonoBehaviour
     public List<Transform> gridGroups = new List<Transform>();
     public float gridHeight = 9;
 
-    public float testSpeed = 1;
+    public float gridMovingSpeed = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -31,9 +31,10 @@ public class RadarGridController : MonoBehaviour
             }
         }
 
-        testSpeed = Mathf.InverseLerp(0, GameManager.instance.descendSpeed, GameManager.instance.currentSpeed);
+        //gridMovingSpeed = Mathf.InverseLerp(0, GameManager.instance.descendSpeed, GameManager.instance.currentSpeed);
+        gridMovingSpeed = GameManager.instance.currentSpeed * GameManager.instance.speedToUnit;
 
-        var speed = testSpeed;
+        var speed = gridMovingSpeed;
         var dt = Time.deltaTime;
 
         for (int i = 0; i < gridGroups.Count; i++)

@@ -78,7 +78,6 @@ public class SonarPing : MonoBehaviour
 
     }
 
-    [ContextMenu("StartPing")]
     public void StartPing()
     {
         isPinging = true;
@@ -91,9 +90,6 @@ public class SonarPing : MonoBehaviour
 
     public void FinishPing()
     {
-
-        Debug.Log("finish ping");
-
         isPinging = false;
         current_radius = max_radius;
         current_duration = 0;
@@ -101,7 +97,6 @@ public class SonarPing : MonoBehaviour
         UpdateCircle();
 
         Destroy(this.gameObject, 0.1f);
-
     }
 
     void UpdateCircle()

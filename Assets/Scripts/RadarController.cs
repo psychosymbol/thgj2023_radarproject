@@ -169,7 +169,6 @@ public class RadarController : MonoBehaviour
 
     public void Ping(ScanPattern patterns, Color color)
     {
-        Debug.Log("ping");
         for (int i = 0; i < patterns.pingSettings.Count; i++)
         {
             var pattern = patterns.pingSettings[i];
@@ -205,15 +204,7 @@ public class RadarController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            //TestCreateCircle();
-            TogglePingStatus();
-        }
-
-
         // ping spawn control
-
         if (isPinging)
         {
             currentTime += Time.deltaTime;
@@ -272,14 +263,14 @@ public class RadarController : MonoBehaviour
         }
     }
 
-    void StartPing()
+    public void StartPing()
     {
         isPinging = true;
         SpawnNextPing();
         currentTime = 0;
         stopPingFlag = false;
     }
-    void StopPing()
+    public void StopPing()
     {
         stopPingFlag = true;
     }
@@ -297,5 +288,61 @@ public class RadarController : MonoBehaviour
         }
     }
 
+    public void SetScanPattern(int diceFace, bool isRotate)
+    {
+        if (!isRotate)
+        {
+            ping_pattern = scanPatterns[diceFace - 1];
+        }
+        else
+        {
+            switch (diceFace)
+            {
+                case 2:
+                    ping_pattern = scanPatterns[(int)PATTERN.D2_R];
+                    break;
+                case 3:
+                    ping_pattern = scanPatterns[(int)PATTERN.D3_R];
+                    break;
+                case 6:
+                    ping_pattern = scanPatterns[(int)PATTERN.D6_R];
+                    break;
+                default:
+                    ping_pattern = scanPatterns[diceFace - 1];
+                    break;
+            }
+        }
+    }
+
+    public void SetDistractPattern(int diceFace, bool isRotate)
+    {
+        if (!isRotate)
+        {
+            distract_pattern = scanPatterns[diceFace - 1];
+        }
+        else
+        {
+            switch (diceFace)
+            {
+                case 2:
+                    distract_pattern = scanPatterns[(int)PATTERN.D2_R];
+                    break;
+                case 3:
+                    distract_pattern = scanPatterns[(int)PATTERN.D3_R];
+                    break;
+                case 6:
+                    distract_pattern = scanPatterns[(int)PATTERN.D6_R];
+                    break;
+                default:
+                    distract_pattern = scanPatterns[diceFace - 1];
+                    break;
+            }
+        }
+    }
+
+    public enum PATTERN
+    {
+        D1 = 0, D2, D3, D4, D5, D6, D2_R, D3_R, D6_R
+    }
 
 }

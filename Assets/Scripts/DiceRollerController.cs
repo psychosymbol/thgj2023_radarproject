@@ -38,7 +38,7 @@ public class DiceRollerController : MonoBehaviour
         diceAnim.SetBool("isRotate", !diceAnim.GetBool("isRotate"));
 
         // important!
-        currentRotation = currentRotation==0 ? 1 : 0;
+        currentRotation = currentRotation == 0 ? 1 : 0;
     }
 
 

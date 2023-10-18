@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a726e732a6e53547a571828dee48f53, type: 3}
+  m_Name: D6_alt
+  m_EditorClassIdentifier: 
+  pingSettings:
+  - pos: {x: -3, y: 3, z: -1}
+    min_radius: 1
+    max_radius: 2
+    lineWidth: 0.05
+    circleDivision: 50
+    duration: 0.5
+    interval: 0.1
+  - pos: {x: 3, y: -3, z: -1}
+    min_radius: 1
+    max_radius: 2
+    lineWidth: 0.05
+    circleDivision: 50
+    duration: 0.5
+    interval: 0.1
+  - pos: {x: 3, y: 3, z: -1}
+    min_radius: 1
+    max_radius: 2
+    lineWidth: 0.05
+    circleDivision: 50
+    duration: 0.5
+    interval: 0.1
+  - pos: {x: -3, y: -3, z: -1}
+    min_radius: 1
+    max_radius: 2
+    lineWidth: 0.05
+    circleDivision: 50
+    duration: 0.5
+    interval: 0.1
+  - pos: {x: 0, y: 3, z: -1}
+    min_radius: 1
+    max_radius: 2
+    lineWidth: 0.05
+    circleDivision: 50
+    duration: 0.5
+    interval: 0.1
+  - pos: {x: 0, y: -3, z: -1}
+    min_radius: 1
+    max_radius: 2
+    lineWidth: 0.05
+    circleDivision: 50
+    duration: 0.5
+    interval: 0.1

@@ -21,6 +21,10 @@ public class GameManager : MonoBehaviour
     public Transform DR_pos_set1;
     public Transform DR_pos_set2;
 
+    public Transform handleTransform;
+    public Transform handle_restTransform;
+    public Transform handle_PressedTransform;
+
     public float tweenDuration = 0.3f;
 
     public MeshRenderer scanLight;
@@ -28,6 +32,28 @@ public class GameManager : MonoBehaviour
 
     public Material mat_on;
     public Material mat_off;
+
+    public float currentDepth = 250;
+    public float descendSpeed = 24; //Conventional submarines have maximum submerged speeds of 16 to 24 knots (8.x-12.x m/s)
+    public float currentSpeed = 0;
+
+    public float speedToUnit = 0.1f;
+
+    public bool descending = false;
+    public bool released = false;
+    public TextMeshPro depthText;
+    public TextMeshPro speedText;
+
+    bool isDRTweening = false;
+    bool isDescendTweening = false;
+
+
+    public bool bothScanFlag = false;
+    // dice roller flash
+    bool flashLightSwitch = false;
+    bool isLit = false;
+    float lightTime;
+    float lightTime_interval;
 
     private void Awake()
     {
@@ -47,28 +73,20 @@ public class GameManager : MonoBehaviour
 
     }
 
+    void UpdateText()
+    {
+
+        depthText.text = "Depth: " + currentDepth.ToString("f0") + "m";
+        speedText.text = "Descend rate: " + currentSpeed.ToString("f0") + "m/s";
+    }
+
     // Update is called once per frame
     void Update()
     {
 
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //{
-        //    switch (dr1State)
-        //    {
-        //        case DR_STATE.REST:
-        //            ToCam();
-        //            break;
-        //        case DR_STATE.CAM:
-        //            ToRest();
-        //            break;
-        //        case DR_STATE.SET:
-        //            break;
-        //    }
-        //}
+        var dt = Time.deltaTime;
 
-
-        currentDepth += currentSpeed * Time.deltaTime;
-        depthText.text = currentDepth.ToString("f0");
+        currentDepth += currentSpeed * dt;
 
         if (!released)
         {
@@ -78,24 +96,75 @@ public class GameManager : MonoBehaviour
                 Stop();
         }
         else
-            currentSpeed += Time.deltaTime * 10;
+            currentSpeed += dt * 10;
+
+
+        //flash
+
+        if (flashLightSwitch)
+        {
+            lightTime += dt;
+            lightTime_interval += dt;
+
+            if (lightTime_interval >= 0.5f)
+            {
+                isLit = !isLit;
+                if (scanDR == DR_TYPE.NONE) scanLight.material = isLit ? mat_on : mat_off;
+                if (distractDR == DR_TYPE.NONE) distractLight.material = isLit ? mat_on : mat_off;
+                lightTime_interval -= 0.5f;
+            }
+
+            if (lightTime >= 3)
+            {
+                flashLightSwitch = false;
+                if (scanDR == DR_TYPE.NONE) scanLight.material = mat_off;
+                if (distractDR == DR_TYPE.NONE) distractLight.material = mat_off;
+            }
+        }
+
+        UpdateText();
     }
 
-    public float currentDepth = 250;
-    public float descendSpeed = 24; //Conventional submarines have maximum submerged speeds of 16 to 24 knots (8.x-12.x m/s)
-    public float currentSpeed = 0;
-
-    //public float 
-
-    public bool descending = false;
-    public bool released = false;
-    public TextMeshProUGUI depthText;
 
     //func
-    public void toggleDescendingStatus()
+    public void ToggleDescendingStatus()
     {
-        descending = !descending;
+        if (isDRTweening) return;
+
+        if (!bothScanFlag)
+        {
+            StartDRTerminalFlash();
+            return;
+        }
+
+        TweenHandle(!descending, () => { });
     }
+
+    public void StartDescending()
+    {
+        if (isDRTweening) return;
+        if (!bothScanFlag)
+        {
+            StartDRTerminalFlash();
+            return;
+        }
+
+        TweenHandle(true, () => { });
+
+    }
+
+    public void StopDescending()
+    {
+        if (isDRTweening) return;
+        if (!bothScanFlag)
+        {
+            StartDRTerminalFlash();
+            return;
+        }
+
+        TweenHandle(false, () => { });
+    }
+
     public void Descend()
     {
         currentSpeed = Mathf.Lerp(currentSpeed, descendSpeed, Time.deltaTime);
@@ -105,14 +174,12 @@ public class GameManager : MonoBehaviour
         currentSpeed = Mathf.Lerp(currentSpeed, 0, Time.deltaTime);
     }
 
-    bool isTweening = false;
 
     public void ToRest()
     {
         var dr = GetSelectedDR();
         ToRest(dr);
     }
-
     public void ToRest(DiceRollerController diceRoller)
     {
         var restTransform = DR_pos_rest1;
@@ -129,7 +196,6 @@ public class GameManager : MonoBehaviour
 
         TweenDR(diceRoller, restTransform, () => { diceRoller.SetDRState(DiceRollerController.DR_STATE.REST); });
     }
-
     public void ToCam(DiceRollerController diceRoller)
     {
         TweenDR(diceRoller, DR_pos_cam, () => { diceRoller.SetDRState(DiceRollerController.DR_STATE.CAM); });
@@ -146,8 +212,8 @@ public class GameManager : MonoBehaviour
     public void TweenDR(DiceRollerController diceRoller, Transform target, System.Action callback)
     {
 
-        if (isTweening) return;
-        isTweening = true;
+        if (isDRTweening) return;
+        isDRTweening = true;
 
         var drTransform = diceRoller.transform;
 
@@ -162,7 +228,7 @@ public class GameManager : MonoBehaviour
 
         System.Action<ITween<float>> onComplete = (t) =>
         {
-            isTweening = false;
+            isDRTweening = false;
             callback();
         };
 
@@ -177,7 +243,44 @@ public class GameManager : MonoBehaviour
             );
     }
 
+    public void TweenHandle(bool descending, System.Action callback)
+    {
 
+        if (isDescendTweening) return;
+        isDescendTweening = true;
+
+        TimCameraController.instance.Shake(1f, 0.5f, 1f, 1f);
+
+        //var startRot = descending ? handle_originXRot : handle_newXRot;
+        var startRot = handleTransform.rotation;
+        var endRot = descending ? handle_PressedTransform.rotation : handle_restTransform.rotation;
+
+
+        System.Action<ITween<float>> onUpdate = (t) =>
+        {
+            handleTransform.rotation = Quaternion.Lerp(startRot, endRot, t.CurrentProgress);
+        };
+
+        System.Action<ITween<float>> onComplete = (t) =>
+        {
+            handleTransform.rotation = endRot;
+            isDescendTweening = false;
+
+            this.descending = descending;
+
+            callback();
+        };
+
+        handleTransform.gameObject.Tween(
+            "handleTween",
+            0,
+            1,
+            tweenDuration,
+            TweenScaleFunctions.QuadraticEaseOut,
+            onUpdate,
+            onComplete
+            );
+    }
 
     public DR_TYPE selectedDR;
     public DR_TYPE scanDR;
@@ -201,26 +304,22 @@ public class GameManager : MonoBehaviour
         switch (state)
         {
             case DR_TYPE.NONE:
-                Debug.Log("Set Scan pattern to: NONE");
+                //Debug.Log("Set Scan pattern to: NONE");
                 scanLight.material = mat_off;
                 break;
             case DR_TYPE.NORMAL:
             case DR_TYPE.BROKE:
-                Debug.Log("Set Scan pattern to: " + state.ToString());
-
                 var dr = GetDR(state);
-
-                Debug.Log("Current Dice face: " + dr.currentFace);
-                RadarController.instance.ping_pattern = RadarController.instance.scanPatterns[dr.currentFace - 1];
-
+                //Debug.Log("Set Scan pattern to: " + state.ToString());
+                //Debug.Log("Current Dice face: " + dr.currentFace);
                 scanLight.material = mat_on;
                 break;
             default:
                 break;
         }
-
-
+        UpdateScanStatus();
     }
+
     public void SetDistractDR(DR_TYPE state)
     {
         distractDR = state;
@@ -228,25 +327,39 @@ public class GameManager : MonoBehaviour
         switch (state)
         {
             case DR_TYPE.NONE:
-                Debug.Log("Set Distract pattern to: NONE");
-
+                //Debug.Log("Set Distract pattern to: NONE");
                 distractLight.material = mat_off;
-
                 break;
             case DR_TYPE.NORMAL:
             case DR_TYPE.BROKE:
-                Debug.Log("Set Distract pattern to: " + state.ToString());
-
                 var dr = GetDR(state);
-
-                Debug.Log("Current Dice face: " + dr.currentFace);
-                RadarController.instance.distract_pattern = RadarController.instance.scanPatterns[dr.currentFace - 1];
-
+                //Debug.Log("Set Distract pattern to: " + state.ToString());
+                //Debug.Log("Current Dice face: " + dr.currentFace);
                 distractLight.material = mat_on;
                 break;
             default:
                 break;
         }
+        UpdateScanStatus();
+    }
+
+    public void UpdateScanStatus()
+    {
+        bothScanFlag = (distractDR != DR_TYPE.NONE && scanDR != DR_TYPE.NONE);
+
+        if (bothScanFlag)
+        {
+            var scanDRController = GetDR(scanDR);
+            radarController.SetScanPattern(scanDRController.currentFace, scanDRController.currentRotation == 1);
+            var distractDRController = GetDR(distractDR);
+            radarController.SetDistractPattern(distractDRController.currentFace, distractDRController.currentRotation == 1);
+            radarController.StartPing();
+        }
+        else
+        {
+            radarController.StopPing();
+        }
+
     }
 
     public void OnRest1Click()
@@ -286,6 +399,7 @@ public class GameManager : MonoBehaviour
 
     public void OnSet1Click()
     {
+        if (descending) return;
         if (selectedDR == DR_TYPE.NONE && scanDR != DR_TYPE.NONE)
         {
             var dr = GetDR(scanDR);
@@ -304,6 +418,7 @@ public class GameManager : MonoBehaviour
     }
     public void OnSet2Click()
     {
+        if (descending) return;
         if (selectedDR == DR_TYPE.NONE && distractDR != DR_TYPE.NONE)
         {
             var dr = GetDR(distractDR);
@@ -343,6 +458,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void StartDRTerminalFlash()
+    {
+        flashLightSwitch = true;
+        lightTime = 0;
+        lightTime_interval = 0;
+        isLit = true;
+
+        if (scanDR == DR_TYPE.NONE) scanLight.material = mat_on;
+        if (distractDR == DR_TYPE.NONE) distractLight.material = mat_on;
+    }
 
 
 }
