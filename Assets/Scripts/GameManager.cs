@@ -172,10 +172,55 @@ public class GameManager : MonoBehaviour
     public void SetScanDR(DR_TYPE state)
     {
         scanDR = state;
+
+        switch (state)
+        {
+            case DR_TYPE.NONE:
+                Debug.Log("Set Scan pattern to: NONE");
+                scanLight.material = mat_off;
+                break;
+            case DR_TYPE.NORMAL:
+            case DR_TYPE.BROKE:
+                Debug.Log("Set Scan pattern to: " + state.ToString());
+
+                var dr = GetDR(state);
+
+                Debug.Log("Current Dice face: " + dr.currentFace);
+
+                scanLight.material = mat_on;
+                break;
+            default:
+                break;
+        }
+
+
     }
     public void SetDistractDR(DR_TYPE state)
     {
         distractDR = state;
+
+        switch (state)
+        {
+            case DR_TYPE.NONE:
+                Debug.Log("Set Distract pattern to: NONE");
+
+                distractLight.material = mat_off;
+
+                break;
+            case DR_TYPE.NORMAL:
+            case DR_TYPE.BROKE:
+                Debug.Log("Set Distract pattern to: " + state.ToString());
+
+                var dr = GetDR(state);
+
+                Debug.Log("Current Dice face: " + dr.currentFace);
+
+
+                distractLight.material = mat_on;
+                break;
+            default:
+                break;
+        }
     }
 
     public void OnRest1Click()
@@ -185,7 +230,7 @@ public class GameManager : MonoBehaviour
             ToCam(DiceRoller_normal);
             SetSelectedDR(DR_TYPE.NORMAL);
         }
-        else if(selectedDR != DR_TYPE.NONE)
+        else if (selectedDR != DR_TYPE.NONE)
         {
             ToRest();
             SetSelectedDR(DR_TYPE.NONE);

@@ -2261,6 +2261,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxAngleX: 10
   maxAngleY: 5
+  camTransform: {fileID: 0}
+  shakeDuration: 0
+  shakeAmount: 0.7
+  decreaseFactor: 1
 --- !u!81 &633557059
 AudioListener:
   m_ObjectHideFlags: 0
@@ -4646,6 +4650,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1291683917}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &1292962740 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 8b46c7956170a7e429057f3afe8c8781, type: 3}
+  m_PrefabInstance: {fileID: 2059688147}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1327693468
 GameObject:
   m_ObjectHideFlags: 0
@@ -5069,6 +5078,10 @@ MonoBehaviour:
   DR_pos_set1: {fileID: 1629275456}
   DR_pos_set2: {fileID: 1116644929}
   tweenDuration: 0.3
+  scanLight: {fileID: 1751074511}
+  distractLight: {fileID: 1292962740}
+  mat_on: {fileID: 2100000, guid: fe216b7abec341148933c8be6049558a, type: 2}
+  mat_off: {fileID: 2100000, guid: 485647c666cc4734cbc3c6c9ed7dc1a3, type: 2}
   currentDepth: 0
   descendSpeed: 100
   selectedDR: 0
@@ -5188,6 +5201,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxAngleX: 10
   maxAngleY: 5
+  camTransform: {fileID: 0}
+  shakeDuration: 0
+  shakeAmount: 0.7
+  decreaseFactor: 1
 --- !u!1 &1503962797
 GameObject:
   m_ObjectHideFlags: 0
@@ -6133,6 +6150,11 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!23 &1751074511 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 8b46c7956170a7e429057f3afe8c8781, type: 3}
+  m_PrefabInstance: {fileID: 1810202669}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1764144688
 GameObject:
   m_ObjectHideFlags: 0
