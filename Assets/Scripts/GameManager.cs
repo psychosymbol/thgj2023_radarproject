@@ -57,6 +57,16 @@ public class GameManager : MonoBehaviour
 
     //docking
     bool dockingPreparing = false;
+    float dockingStartDepth = 0;
+    float dockingTime = 0;
+    public float dockingDuration = 5;
+
+    bool stationStop;
+    float stationTime;
+    float stationTime_interval;
+    bool isFlashStationIcon = false;
+    public float stationStopDuration = 10;
+    public GameObject stationTransferIcon;
 
     private void Awake()
     {
@@ -89,17 +99,46 @@ public class GameManager : MonoBehaviour
 
         var dt = Time.deltaTime;
 
-        currentDepth += currentSpeed * dt;
+        var dockingRange = 100f;
 
-        if (!released)
+        if (!dockingPreparing)
         {
-            if (descending)
-                Descend();
+            if (!released)
+            {
+                if (descending)
+                {
+                    Descend();
+                }
+                else
+                {
+                    Stop();
+                }
+                currentDepth += currentSpeed * dt;
+
+                //check for docking
+                if (nextStation != null && nextStation.depth - currentDepth < dockingRange)
+                {
+                    StartDocking();
+                }
+
+            }
             else
-                Stop();
+            {
+                currentSpeed += dt * 10;
+                currentDepth += currentSpeed * dt;
+            }
         }
         else
-            currentSpeed += dt * 10;
+        {
+            dockingTime += dt;
+            currentDepth = Mathf.Lerp(dockingStartDepth, nextStation.depth, dockingTime.Remap(0, dockingDuration, 0, 1));
+            if (dockingTime >= dockingDuration)
+            {
+                FinishDocking();
+            }
+
+        }
+
 
 
         //flash
@@ -124,7 +163,62 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        //flash
+        if (stationStop)
+        {
+            stationTime += dt;
+            stationTime_interval += dt;
+
+            if (stationTime_interval >= 0.5f)
+            {
+                isFlashStationIcon = !isFlashStationIcon;
+                stationTransferIcon.SetActive(isFlashStationIcon);
+                stationTime_interval -= 0.5f;
+            }
+
+            if (stationTime >= stationStopDuration)
+            {
+                stationTransferIcon.SetActive(false);
+                AudioManager.instance.PlaySound("sfx_finishdocking", AudioManager.Chanel.SFX_2);
+                stationStop = false;
+            }
+        }
+
         UpdateText();
+    }
+
+    public void StartDocking()
+    {
+        Debug.Log("start docking");
+
+        dockingPreparing = true;
+        dockingTime = 0;
+        dockingStartDepth = currentDepth;
+        StopDescending();
+
+        // calculate speed
+        currentSpeed = (nextStation.depth - currentDepth) / dockingDuration;
+    }
+    public void FinishDocking()
+    {
+        Debug.Log("finished docking");
+
+        AudioManager.instance.PlaySound("sfx_docking", AudioManager.Chanel.SFX_1);
+        AudioManager.instance.StopSound(AudioManager.Chanel.ELEVATOR_LOOP); // loop channel
+        TimCameraController.instance.Shake(1f, 0.5f, 1f, 1f);
+
+        dockingPreparing = false;
+        currentSpeed = 0;
+        nextStation.dockingEnable = false;
+        nextStation = null;
+
+        stationStop = true;
+        isFlashStationIcon = true;
+        stationTime = 0;
+        stationTime_interval = 0;
+        stationTransferIcon.SetActive(true);
+
+        radarController.StopPing();
     }
 
     public StationController nextStation = null;
@@ -132,7 +226,9 @@ public class GameManager : MonoBehaviour
     //func
     public void ToggleDescendingStatus()
     {
-        if (isDRTweening) return;
+        if (dockingPreparing) return;
+        if (stationStop) return;
+        if (isDescendTweening) return;
 
         if (!bothScanFlag)
         {
@@ -146,6 +242,8 @@ public class GameManager : MonoBehaviour
         if (_descending)
         {
             AudioManager.instance.PlaySound("sfx_machineloop", AudioManager.Chanel.ELEVATOR_LOOP); // loop channel
+
+            if (!radarController.isPinging) radarController.StartPing();
 
             //checking for next docking station
 
@@ -162,7 +260,7 @@ public class GameManager : MonoBehaviour
 
     // public void StartDescending()
     // {
-    //     if (isDRTweening) return;
+    //     if (isDescendTweening) return;
     //     if (!bothScanFlag)
     //     {
     //         StartDRTerminalFlash();
@@ -173,17 +271,11 @@ public class GameManager : MonoBehaviour
     // 
     // }
     // 
-    // public void StopDescending()
-    // {
-    //     if (isDRTweening) return;
-    //     if (!bothScanFlag)
-    //     {
-    //         StartDRTerminalFlash();
-    //         return;
-    //     }
-    // 
-    //     TweenHandle(false, () => { });
-    // }
+    public void StopDescending()
+    {
+        AudioManager.instance.PlaySound("sfx_start", AudioManager.Chanel.SFX_1);
+        TweenHandle(false, () => { });
+    }
 
     public void Descend()
     {
@@ -419,6 +511,8 @@ public class GameManager : MonoBehaviour
 
     public void OnSet1Click()
     {
+        if (dockingPreparing) return;
+        if (stationStop) return;
         if (descending) return;
         if (selectedDR == DR_TYPE.NONE && scanDR != DR_TYPE.NONE)
         {
@@ -440,6 +534,8 @@ public class GameManager : MonoBehaviour
     }
     public void OnSet2Click()
     {
+        if (dockingPreparing) return;
+        if (stationStop) return;
         if (descending) return;
         if (selectedDR == DR_TYPE.NONE && distractDR != DR_TYPE.NONE)
         {

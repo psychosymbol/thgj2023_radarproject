@@ -61,7 +61,7 @@ public class RadarController : MonoBehaviour
     float currentTime = 0f;
     int currentPattern = 0;
 
-    bool isPinging = false;
+    public bool isPinging = false;
     bool stopPingFlag = false;
 
     void ShowUI()
