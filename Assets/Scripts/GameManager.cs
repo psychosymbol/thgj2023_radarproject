@@ -238,9 +238,9 @@ public class GameManager : MonoBehaviour
 
         var _descending = !descending;
 
-        AudioManager.instance.PlaySound("sfx_start", AudioManager.Chanel.SFX_1);
         if (_descending)
         {
+            AudioManager.instance.PlaySound("sfx_start", AudioManager.Chanel.SFX_1);
             AudioManager.instance.PlaySound("sfx_machineloop", AudioManager.Chanel.ELEVATOR_LOOP); // loop channel
 
             if (!radarController.isPinging) radarController.StartPing();
@@ -252,6 +252,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            AudioManager.instance.PlaySound("sfx_finishdocking", AudioManager.Chanel.SFX_1);
             AudioManager.instance.StopSound(AudioManager.Chanel.ELEVATOR_LOOP); // loop channel
         }
 
