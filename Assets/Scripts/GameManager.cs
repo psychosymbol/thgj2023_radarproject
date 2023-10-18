@@ -2,6 +2,7 @@ using DigitalRuby.Tween;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -66,18 +67,36 @@ public class GameManager : MonoBehaviour
         //}
 
 
+        currentDepth += currentSpeed * Time.deltaTime;
+        depthText.text = currentDepth.ToString("f0");
 
+        if (Descending)
+            Descend();
+        else
+            Stop();
     }
 
     public float currentDepth = 0;
-    public float descendSpeed = 100;
+    public float descendSpeed = 24; //Conventional submarines have maximum submerged speeds of 16 to 24 knots (8.x-12.x m/s)
+    public float currentSpeed = 0;
 
     //public float 
 
+    public bool Descending = false;
+    public TextMeshProUGUI depthText;
+
     //func
+    public void toggleDescendingStatus()
+    {
+        Descending = !Descending;
+    }
     public void Descend()
     {
-
+        currentSpeed = Mathf.Lerp(currentSpeed, descendSpeed, Time.deltaTime);
+    }
+    public void Stop()
+    {
+        currentSpeed = Mathf.Lerp(currentSpeed, 0, Time.deltaTime);
     }
 
     bool isTweening = false;
@@ -186,6 +205,7 @@ public class GameManager : MonoBehaviour
                 var dr = GetDR(state);
 
                 Debug.Log("Current Dice face: " + dr.currentFace);
+                RadarController.instance.ping_pattern = RadarController.instance.scanPatterns[dr.currentFace - 1];
 
                 scanLight.material = mat_on;
                 break;
@@ -214,7 +234,7 @@ public class GameManager : MonoBehaviour
                 var dr = GetDR(state);
 
                 Debug.Log("Current Dice face: " + dr.currentFace);
-
+                RadarController.instance.distract_pattern = RadarController.instance.scanPatterns[dr.currentFace - 1];
 
                 distractLight.material = mat_on;
                 break;

@@ -31,6 +31,8 @@ public class RadarGridController : MonoBehaviour
             }
         }
 
+        testSpeed = Mathf.InverseLerp(0, GameManager.instance.descendSpeed, GameManager.instance.currentSpeed);
+
         var speed = testSpeed;
         var dt = Time.deltaTime;
 

@@ -261,8 +261,8 @@ public class RadarController : MonoBehaviour
     {
         if (!isPinging)
         {
-            ping_pattern = scanPatterns[0];
-            distract_pattern = scanPatterns[1];
+            //ping_pattern = scanPatterns[0];
+            //distract_pattern = scanPatterns[1];
 
             StartPing();
         }
