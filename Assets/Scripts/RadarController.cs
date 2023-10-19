@@ -175,9 +175,17 @@ public class RadarController : MonoBehaviour
         {
             currentTime += Time.deltaTime;
 
-            if (currentTime > pingDuration)
+            if (currentTime > pingDuration) // finish ping
             {
-
+                switch (currentPattern)
+                {
+                    case 0:
+                        MonsterManager.instance.ResetCreaturePingFlag();
+                        break;
+                    case 1:
+                        MonsterManager.instance.ResetCreatureDistractFlag();
+                        break;
+                }
             }
 
             if (currentTime > (pingDuration + pingDelay))

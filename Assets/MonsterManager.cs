@@ -27,13 +27,10 @@ public class MonsterManager : MonoBehaviour
 
     public void CheckCreatures_Scan(Vector3 pos, float radius)
     {
-
         for (int i = 0; i < creatures.Count; i++)
         {
             var creature = creatures[i];
             Transform t = creature.transform;
-            if (Mathf.Pow(t.position.x - pos.x, 2) + Mathf.Pow(t.position.y - pos.y, 2) < Mathf.Pow(radius, 2))
-            {
                 if (TestInsideCircle(t.position, pos, radius))
                 {
                     if (creature.pingable)
@@ -42,25 +39,20 @@ public class MonsterManager : MonoBehaviour
                         creature.OnPing();
                     }
                 }
-            }
         }
     }
     public void CheckCreatures_Distract(Vector3 pos, float radius)
     {
-
         for (int i = 0; i < creatures.Count; i++)
         {
             var creature = creatures[i];
             Transform t = creature.transform;
-            if (Mathf.Pow(t.position.x - pos.x, 2) + Mathf.Pow(t.position.y - pos.y, 2) < Mathf.Pow(radius, 2))
+            if (TestInsideCircle(t.position, pos, radius))
             {
-                if (TestInsideCircle(t.position, pos, radius))
+                if (creature.distractable)
                 {
-                    if (creature.distractable)
-                    {
-                        creature.distractable = false;
-                        creature.OnDistract();
-                    }
+                    creature.distractable = false;
+                    creature.OnDistract();
                 }
             }
         }
@@ -68,10 +60,21 @@ public class MonsterManager : MonoBehaviour
 
     public void ResetCreaturePingFlag()
     {
-
+        foreach (var creature in creatures)
+        {
+            creature.pingable = true;
+        }
     }
 
-    public bool TestInsideCircle(Vector3 pos,Vector3 circleCenter,float radius)
+    public void ResetCreatureDistractFlag()
+    {
+        foreach (var creature in creatures)
+        {
+            creature.distractable = true;
+        }
+    }
+
+    public bool TestInsideCircle(Vector3 pos, Vector3 circleCenter, float radius)
     {
         if (Mathf.Pow(pos.x - circleCenter.x, 2) + Mathf.Pow(pos.y - circleCenter.y, 2) < Mathf.Pow(radius, 2))
         {
@@ -84,12 +87,12 @@ public class MonsterManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }
