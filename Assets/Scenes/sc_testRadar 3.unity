@@ -2386,6 +2386,8 @@ MonoBehaviour:
   - {fileID: 1338629030}
   gridHeight: 9
   gridMovingSpeed: 1
+  totalDescendUnit: 0
+  stations: []
 --- !u!1001 &600712738
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5648,6 +5650,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1404389308}
   - component: {fileID: 1404389309}
+  - component: {fileID: 1404389310}
   m_Layer: 6
   m_Name: Circle
   m_TagString: Untagged
@@ -5722,6 +5725,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1404389310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1404389307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71f09e58287d3a044b2e855ec967eeb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fishSize: 0
+  player: {fileID: 0}
+  spawnFinish: 0
 --- !u!1001 &1411443229
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5952,12 +5970,16 @@ MonoBehaviour:
   currentDepth: 250
   descendSpeed: 24
   currentSpeed: 0
-  speedToUnit: 0.1
+  depthToUnit: 0.1
   descending: 0
   released: 0
   depthText: {fileID: 478852190}
   speedText: {fileID: 1632204026}
   bothScanFlag: 0
+  dockingDuration: 5
+  stationStopDuration: 10
+  stationTransferIcon: {fileID: 0}
+  nextStation: {fileID: 0}
   selectedDR: 0
   scanDR: 0
   distractDR: 0
@@ -8321,6 +8343,7 @@ MonoBehaviour:
   hideFrameCount: 0
   ping_pattern: {fileID: 0}
   distract_pattern: {fileID: 0}
+  isPinging: 0
 --- !u!1001 &1950072457
 PrefabInstance:
   m_ObjectHideFlags: 0
