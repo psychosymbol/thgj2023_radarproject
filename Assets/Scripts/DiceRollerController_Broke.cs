@@ -8,8 +8,6 @@ public class DiceRollerController_Broke : DiceRollerController
     bool isPressed = false;
     bool isRandoming = false;
 
-
-
     float randomTime = 0;
     float randomTime_interval = 0;
 
@@ -69,10 +67,7 @@ public class DiceRollerController_Broke : DiceRollerController
         }
 
         isRandoming = true;
-        randomCount--;
-
-        UpdateLightSwitch();
-
+        DecreaseRandomCount();
         //diceAnim.SetInteger("DiceFace", faceNumber);
         //SetButtonPressed(faceNumber);
 
@@ -139,6 +134,17 @@ public class DiceRollerController_Broke : DiceRollerController
 
         }
 
+    }
+
+    public void DecreaseRandomCount()
+    {
+        randomCount--;
+        UpdateLightSwitch();
+    }
+    public void RestoreRandomCount()
+    {
+        randomCount = 4;
+        UpdateLightSwitch();
     }
 
     void UpdateLightSwitch()

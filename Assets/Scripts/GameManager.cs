@@ -91,25 +91,6 @@ public class GameManager : MonoBehaviour
 
     void UpdateText()
     {
-        string condition = "";
-        switch (hullDurability)
-        {
-            case 3:
-            default:
-                condition = "<color=green>Perfect</color>";
-                break;
-            case 2:
-                condition = "<color=yellow>Damaged</color>";
-                break;
-            case 1:
-                condition = "<color=red>Critical</color>";
-                break;
-            case 0:
-                condition = "<color=red>Lost</color>";
-                break;
-        }
-
-        hullCondition.text = "Hull Condition: " + condition;
         depthText.text = "Depth: " + currentDepth.ToString("f0") + "m";
         speedText.text = "Descend rate: " + currentSpeed.ToString("f0") + "m/s";
     }
@@ -199,6 +180,8 @@ public class GameManager : MonoBehaviour
 
             if (stationTime >= stationStopDuration)
             {
+                Repaired();
+                DiceRoller_broke.GetComponent<DiceRollerController_Broke>().RestoreRandomCount();
                 stationTransferIcon.SetActive(false);
                 AudioManager.instance.PlaySound("sfx_finishdocking", AudioManager.Chanel.SFX_2);
                 stationStop = false;
@@ -208,6 +191,7 @@ public class GameManager : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Space))         //delete this
         {                                           //delete this
             Damaged();                              //delete this
+            testDamage = false;                     //delete this
         }
 
         UpdateText();
@@ -217,14 +201,38 @@ public class GameManager : MonoBehaviour
     public void Damaged()
     {
         hullDurability -= 1;
-        TimCameraController.instance.Shake(.2f, 5f, .5f, 1);
-        testDamage = false; //delete this
+        string condition = "";
+        switch (hullDurability)
+        {
+            case 3:
+                condition = "<color=green>Hull Condition: Perfect</color>";
+                AudioManager.instance.PlaySound("sfx_damaged1", AudioManager.Chanel.SFX_2);
+                TimCameraController.instance.Shake(.2f, 1.5f, .5f, 1);
+                break;
+            case 2:
+                condition = "<color=yellow>Hull Condition: Damaged</color>";
+                AudioManager.instance.PlaySound("sfx_damaged2", AudioManager.Chanel.SFX_2);
+                TimCameraController.instance.Shake(.2f, 3f, .5f, 1);
+                break;
+            case 1:
+                condition = "<color=red>Hull Condition: Critical</color>";
+                AudioManager.instance.PlaySound("sfx_damaged3", AudioManager.Chanel.SFX_2);
+                TimCameraController.instance.Shake(.2f, 5f, .5f, 1);
+                break;
+            case 0:
+            default:
+                condition = "<color=red>Hull Condition: Lost</color>";
+                AudioManager.instance.PlaySound("sfx_damaged3", AudioManager.Chanel.SFX_2);
+                TimCameraController.instance.Shake(.2f, 2f, .5f, 1);
+                break;
+        }
+        Flash.instance.doflash();
+        hullCondition.text = condition;
     }
-    public bool testRepair = false; //delete this
     public void Repaired()
     {
         hullDurability = 3;
-        testRepair = false; //delete this
+        hullCondition.text = "<color=green>Hull Condition: Perfect</color>";
     }
 
     public void StartDocking()
@@ -257,7 +265,6 @@ public class GameManager : MonoBehaviour
         stationTime = 0;
         stationTime_interval = 0;
         stationTransferIcon.SetActive(true);
-        Repaired();
         radarController.StopPing();
     }
 
