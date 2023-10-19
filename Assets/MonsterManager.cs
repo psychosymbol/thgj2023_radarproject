@@ -93,6 +93,11 @@ public class MonsterManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        Rect elevaterRect = new Rect(-1, -1, 2, 2);
+        foreach (var item in creatures)
+        {
+            if(elevaterRect.Contains(item.transform.position))
+            item.MarkForDestroy();
+        }
     }
 }

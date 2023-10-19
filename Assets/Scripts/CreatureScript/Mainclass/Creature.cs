@@ -29,6 +29,20 @@ public class Creature : MonoBehaviour
     public bool pingable = true;
     public bool distractable = true;
 
+    public BehaviorState currentState;
+
+    public enum BehaviorState
+    {
+        Wonder,
+        Flee,
+        Attack
+    }
+
+    public float wonderRange = 1;
+    private Vector3 originalSpawnPosition;
+
+    public bool markForDestroy = false;
+
     private void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
@@ -40,6 +54,8 @@ public class Creature : MonoBehaviour
         player = GameManager.instance;
         sizeInit();
         onSpawn();
+        ChangeState(BehaviorState.Wonder);
+        //MonsterManager.instance.creatures.Add(this);
     }
 
     public virtual void Update()
@@ -62,7 +78,7 @@ public class Creature : MonoBehaviour
         alpha = Mathf.Clamp01(alpha);
 
         UpdateAlpha();
-
+        UpdateBehavior();
     }
 
     public void Reveal()
@@ -73,6 +89,83 @@ public class Creature : MonoBehaviour
     void UpdateAlpha()
     {
         sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, alpha);
+    }
+
+    public float currentDistance;
+    private Vector3 targetPosition;
+    public float preferWonderDistance = .1f;
+
+    void ChangeState(BehaviorState newState)
+    {
+        switch (newState)
+        {
+            default:
+            case BehaviorState.Wonder:
+                break;
+            case BehaviorState.Flee:
+                break;
+            case BehaviorState.Attack:
+                break;
+        }
+        currentState = newState;
+
+        GetTargetPosition();
+    }
+
+    void GetTargetPosition()
+    {
+        switch (currentState)
+        {
+            default:
+            case BehaviorState.Wonder:
+                Vector3 randomPosition = Random.insideUnitCircle * wonderRange;
+                targetPosition = originalSpawnPosition + randomPosition;
+                break;
+            case BehaviorState.Flee:
+
+                break;
+            case BehaviorState.Attack:
+                targetPosition = new Vector3(0, 0, originalSpawnPosition.z);
+                break;
+        }
+    }
+
+    void UpdateBehavior()
+    {
+        switch (currentState)
+        {
+            default:
+            case BehaviorState.Wonder:
+                currentDistance = Vector2.Distance(targetPosition, transform.position);
+                if (currentDistance > preferWonderDistance)
+                {
+                    transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * .5f);
+                }
+                else
+                {
+                    ChangeState(BehaviorState.Wonder);
+                }
+                transform.position += new Vector3(0, GameManager.instance.currentSpeed * Time.deltaTime * GameManager.instance.depthToUnit, 0);
+                targetPosition += new Vector3(0, GameManager.instance.currentSpeed * Time.deltaTime * GameManager.instance.depthToUnit, 0);
+                break;
+            case BehaviorState.Flee:
+                break;
+            case BehaviorState.Attack:
+                break;
+        }
+    }
+
+    public void MarkForDestroy()
+    {
+        if (markForDestroy) return;
+        Destroy(gameObject, .1f);
+        GameManager.instance.Damaged();
+        markForDestroy = true;
+    }
+
+    private void OnDestroy()
+    {
+        MonsterManager.instance.creatures.Remove(this);
     }
 
     public virtual void sizeInit()
@@ -113,7 +206,7 @@ public class Creature : MonoBehaviour
 
     public virtual void onSpawn()
     {
-        Debug.Log("testSpawning from mother class");
+        originalSpawnPosition = transform.position;
         spawnFinish = true;
     }
 
@@ -124,6 +217,6 @@ public class Creature : MonoBehaviour
 
     public virtual void OnDistract()
     {
-
+        Reveal();
     }
 }

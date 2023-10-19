@@ -187,17 +187,8 @@ public class GameManager : MonoBehaviour
                 stationStop = false;
             }
         }
-
-        if(Input.GetKeyDown(KeyCode.Space))         //delete this
-        {                                           //delete this
-            Damaged();                              //delete this
-            testDamage = false;                     //delete this
-        }
-
         UpdateText();
     }
-
-    public bool testDamage = false; //delete this
     public void Damaged()
     {
         hullDurability -= 1;
