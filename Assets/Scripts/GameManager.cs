@@ -287,6 +287,8 @@ public class GameManager : MonoBehaviour
                 AudioManager.instance.PlaySound("sfx_damaged3", AudioManager.Chanel.SFX_2);
                 TimCameraController.instance.Shake(.2f, 2f, .5f, 1);
                 StartCoroutine(fadeOut());
+                Stop();
+                gameOver = true;
                 break;
         }
         Flash.instance.doflash();
@@ -340,6 +342,7 @@ public class GameManager : MonoBehaviour
     //func
     public void ToggleDescendingStatus()
     {
+        if (gameOver) return;
         if (dockingPreparing) return;
         if (stationStop) return;
         if (isDescendTweening) return;
