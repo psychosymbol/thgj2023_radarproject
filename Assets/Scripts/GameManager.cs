@@ -223,7 +223,7 @@ public class GameManager : MonoBehaviour
                 TimCameraController.instance.Shake(.2f, 2f, .5f, 1);
                 break;
         }
-
+        Flash.instance.doflash();
         hullCondition.text = condition;
         testDamage = false; //delete this
     }
