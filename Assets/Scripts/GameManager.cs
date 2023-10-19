@@ -257,6 +257,9 @@ public class GameManager : MonoBehaviour
         stationTime_interval = 0;
         stationTransferIcon.SetActive(true);
         radarController.StopPing();
+
+        StationManager.instance.spawnNextStation();
+        MonsterManager.instance.spawnMonster(currentDepth + 100, currentDepth + 900);
     }
 
     public StationController nextStation = null;

@@ -302,6 +302,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   depth: 0
+  stationName: {fileID: 3524401973262283099}
+  dockingEnable: 1
 --- !u!1 &3524401973262283101
 GameObject:
   m_ObjectHideFlags: 0

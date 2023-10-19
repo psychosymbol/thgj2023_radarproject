@@ -16,18 +16,6 @@ public class BigeyeTuna : Creature
     {
         base.sizeInit();
     }
-    public override void behavior()
-    {
-        if(player.descending)
-        {
-
-        }
-        else
-        {
-
-        }
-        base.behavior();
-    }
     public override void onSpawn()
     {
         Debug.Log("testSpawning from child class");
@@ -37,8 +25,8 @@ public class BigeyeTuna : Creature
     {
         base.OnPing();
     }
-    public override void OnDistract()
+    public override void OnDistract(Vector3 sonarPos)
     {
-        base.OnDistract();
+        base.OnDistract(sonarPos);
     }
 }

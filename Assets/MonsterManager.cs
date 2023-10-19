@@ -6,19 +6,18 @@ using static UnityEditor.PlayerSettings;
 public class MonsterManager : MonoBehaviour
 {
     public static MonsterManager instance;
-
+    public int gameDifficulty = 1;
+    public int startSpawnNumber = 4;
     private void Awake()
     {
         if (instance == null)
         {
             instance = this;
-            //DontDestroyOnLoad(this.gameObject); // game only has 1 scene. no need to dontDestroyOnload
         }
         else if (instance != this)
         {
             Destroy(this);
         }
-
     }
 
     public List<Creature> creatures = new List<Creature>();
@@ -52,7 +51,7 @@ public class MonsterManager : MonoBehaviour
                 if (creature.distractable)
                 {
                     creature.distractable = false;
-                    creature.OnDistract();
+                    creature.OnDistract(pos);
                 }
             }
         }
@@ -87,7 +86,7 @@ public class MonsterManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        spawnMonster(500, 800);
     }
 
     // Update is called once per frame
@@ -99,5 +98,38 @@ public class MonsterManager : MonoBehaviour
             if(elevaterRect.Contains(item.transform.position))
             item.MarkForDestroy();
         }
+    }
+
+    public GameObject monsterPrefabs;
+    public Transform monsterPrefabHolder;
+
+    public void spawnMonster(float minTargetDepth, float maxTargetDepht)
+    {
+        foreach (var item in creatures)
+        {
+            if (!item.noRandom)
+                item.MarkForDestroy(.1f, false);
+        }
+        int monsterCreated = 0;
+        while (monsterCreated < startSpawnNumber + gameDifficulty)
+        {
+            Creature newMonster = Instantiate(monsterPrefabs, monsterPrefabHolder).GetComponent<Creature>();
+            float depth = Random.Range(minTargetDepth, maxTargetDepht);
+            var unitY = depth * GameManager.instance.depthToUnit;
+
+            newMonster.transform.position = new Vector3(
+                0,
+                -(unitY - RadarGridController.instance.totalDescendUnit),
+                -2
+                );
+
+            Vector3 randomCirclePosition = Random.insideUnitCircle * Random.Range(1f, 1.5f);
+
+            newMonster.transform.position += randomCirclePosition;
+            creatures.Add(newMonster);
+            monsterCreated++;
+        }
+
+        
     }
 }
