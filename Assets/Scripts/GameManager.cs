@@ -180,6 +180,8 @@ public class GameManager : MonoBehaviour
 
             if (stationTime >= stationStopDuration)
             {
+                Repaired();
+                DiceRoller_broke.GetComponent<DiceRollerController_Broke>().RestoreRandomCount();
                 stationTransferIcon.SetActive(false);
                 AudioManager.instance.PlaySound("sfx_finishdocking", AudioManager.Chanel.SFX_2);
                 stationStop = false;
@@ -189,6 +191,7 @@ public class GameManager : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Space))         //delete this
         {                                           //delete this
             Damaged();                              //delete this
+            testDamage = false;                     //delete this
         }
 
         UpdateText();
@@ -225,14 +228,11 @@ public class GameManager : MonoBehaviour
         }
         Flash.instance.doflash();
         hullCondition.text = condition;
-        testDamage = false; //delete this
     }
-    public bool testRepair = false; //delete this
     public void Repaired()
     {
         hullDurability = 3;
         hullCondition.text = "<color=green>Hull Condition: Perfect</color>";
-        testRepair = false; //delete this
     }
 
     public void StartDocking()
@@ -265,7 +265,6 @@ public class GameManager : MonoBehaviour
         stationTime = 0;
         stationTime_interval = 0;
         stationTransferIcon.SetActive(true);
-        Repaired();
         radarController.StopPing();
     }
 
