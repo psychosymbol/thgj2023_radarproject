@@ -15,10 +15,25 @@ public class Creature : MonoBehaviour
     }
 
     public FishSize fishSize;
-    public GameManager player;
 
+    public GameManager player;
+    public SpriteRenderer sr;
+
+    public Color color;
 
     public bool spawnFinish = false;
+
+    float alpha = 1;
+    public float fadingRate = 1;
+
+    public bool pingable = true;
+    public bool distractable = true;
+
+    private void Awake()
+    {
+        sr = GetComponent<SpriteRenderer>();
+        sr.color = color;
+    }
 
     public virtual void Start()
     {
@@ -29,6 +44,9 @@ public class Creature : MonoBehaviour
 
     public virtual void Update()
     {
+
+        var dt = Time.deltaTime;
+
         if (!spawnFinish)
         {
 
@@ -37,33 +55,55 @@ public class Creature : MonoBehaviour
         {
             behavior();
         }
+
+        //
+
+        alpha -= fadingRate * dt;
+        alpha = Mathf.Clamp01(alpha);
+
+        UpdateAlpha();
+
+    }
+
+    public void Reveal()
+    {
+        alpha = 1;
+    }
+
+    void UpdateAlpha()
+    {
+        sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, alpha);
     }
 
     public virtual void sizeInit()
     {
+
+        var size = 1f;
+
         switch (fishSize)
         {
             case FishSize.XS:
-                transform.localScale = transform.localScale * .25f;
+                size = .1f;
                 break;
             case FishSize.S:
-                transform.localScale = transform.localScale * .5f;
+                size = .15f;
                 break;
             case FishSize.M:
-                transform.localScale = transform.localScale * 1f;
+                size = .25f;
                 break;
             case FishSize.L:
-                transform.localScale = transform.localScale * 1.5f;
+                size = .4f;
                 break;
             case FishSize.XL:
-                transform.localScale = transform.localScale * 2f;
+                size = .5f;
                 break;
             case FishSize.XXL:
-                transform.localScale = transform.localScale * 2.5f;
+                size = .75f;
                 break;
             default:
                 break;
         }
+        transform.localScale = Vector3.one * size;
     }
 
     public virtual void behavior()
@@ -77,12 +117,12 @@ public class Creature : MonoBehaviour
         spawnFinish = true;
     }
 
-    public virtual void reactionToPing()
+    public virtual void OnPing()
     {
-
+        Reveal();
     }
 
-    public virtual void reactionToDistract()
+    public virtual void OnDistract()
     {
 
     }

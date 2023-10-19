@@ -88,25 +88,6 @@ public class RadarController : MonoBehaviour
         hideFlag = true;
         HideUI();
     }
-
-    public void TestInsideCircle(Vector3 pos, float radius)
-    {
-
-        for (int i = 0; i < testObjects.Count; i++)
-        {
-            Transform t = testObjects[i];
-
-            //(x-center_x)^2 + (y - center_y)^2 < radius^2
-
-            if (Mathf.Pow(t.position.x - pos.x, 2) + Mathf.Pow(t.position.y - pos.y, 2) < Mathf.Pow(radius, 2))
-            {
-                t.GetComponent<SpriteRenderer>().color = Color.red;
-            }
-
-        }
-
-    }
-
     private void Awake()
     {
         if (instance == null)
@@ -152,22 +133,7 @@ public class RadarController : MonoBehaviour
         MB.SetPosition(1, new Vector3(0, -halfinnerheight, zValue));
     }
 
-
-    [ContextMenu("TestCreateCircle")]
-    public void TestCreateCircle(int index = -1)
-    {
-        if (index == -1)
-        {
-            index = Random.Range(0, 6);
-        }
-
-        var patterns = scanPatterns[index];
-
-        Ping(patterns, Color.green);
-
-    }
-
-    public void Ping(ScanPattern patterns, Color color)
+    public void Ping(ScanPattern patterns, SonarPing.TYPE type)
     {
         for (int i = 0; i < patterns.pingSettings.Count; i++)
         {
@@ -190,7 +156,7 @@ public class RadarController : MonoBehaviour
                 pattern.circleDivision,
                 pattern.duration,
                 pattern.interval,
-                color
+                type
                 );
         }
     }
@@ -208,6 +174,11 @@ public class RadarController : MonoBehaviour
         if (isPinging)
         {
             currentTime += Time.deltaTime;
+
+            if (currentTime > pingDuration)
+            {
+
+            }
 
             if (currentTime > (pingDuration + pingDelay))
             {
@@ -280,11 +251,11 @@ public class RadarController : MonoBehaviour
         switch (currentPattern)
         {
             case 0:
-                Ping(ping_pattern, Color.green);
+                Ping(ping_pattern,SonarPing.TYPE.SCAN);
                 AudioManager.instance.PlaySound("sfx_sonar1", AudioManager.Chanel.SONAR);
                 break;
             case 1:
-                Ping(distract_pattern, Color.red);
+                Ping(distract_pattern, SonarPing.TYPE.DISTRACT);
                 AudioManager.instance.PlaySound("sfx_sonar2", AudioManager.Chanel.SONAR);
                 break;
         }

@@ -30,9 +30,28 @@ public class SonarPing : MonoBehaviour
 
     public Color color = Color.white;
 
-    public void SetUp(Vector3 pos, float min_radius, float max_radius, float lineWidth, int division, float pingDuration, float ping_interval, Color color ,int loop = 1)
+    public enum TYPE
     {
-        this.color = color;
+        SCAN,
+        DISTRACT
+    }
+
+    public TYPE type;
+
+    public void SetUp(Vector3 pos, float min_radius, float max_radius, float lineWidth, int division, float pingDuration, float ping_interval, TYPE type,int loop = 1)
+    {
+        this.type = type;
+        switch (type)
+        {
+            case TYPE.SCAN:
+                this.color = Color.green;
+                break;
+            case TYPE.DISTRACT:
+                this.color = Color.red;
+                break;
+            default:
+                break;
+        }
 
         this.ping_count = loop;
         current_ping_count = 0;
@@ -139,7 +158,16 @@ public class SonarPing : MonoBehaviour
             {
                 interval_time -= interval;
 
-                RadarController.instance.TestInsideCircle(transform.position, current_radius);
+                switch (type)
+                {
+                    case TYPE.SCAN:
+                        MonsterManager.instance.CheckCreatures_Scan(transform.position, current_radius);
+                        break;
+                    case TYPE.DISTRACT:
+                        MonsterManager.instance.CheckCreatures_Distract(transform.position, current_radius);
+                        break;
+                }
+
 
                 RadarController.instance.flashHide();
 

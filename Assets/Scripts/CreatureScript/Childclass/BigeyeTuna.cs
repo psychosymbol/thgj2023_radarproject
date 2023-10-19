@@ -33,12 +33,12 @@ public class BigeyeTuna : Creature
         Debug.Log("testSpawning from child class");
         base.onSpawn();
     }
-    public override void reactionToPing()
+    public override void OnPing()
     {
-        base.reactionToPing();
+        base.OnPing();
     }
-    public override void reactionToDistract()
+    public override void OnDistract()
     {
-        base.reactionToDistract();
+        base.OnDistract();
     }
 }
