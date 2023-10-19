@@ -6770,6 +6770,8 @@ MonoBehaviour:
   dockingDuration: 7
   stationStopDuration: 10
   stationTransferIcon: {fileID: 1515727395}
+  testDamage: 0
+  testRepair: 0
   nextStation: {fileID: 0}
   selectedDR: 0
   scanDR: 0

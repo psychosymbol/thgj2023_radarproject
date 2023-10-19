@@ -91,25 +91,6 @@ public class GameManager : MonoBehaviour
 
     void UpdateText()
     {
-        string condition = "";
-        switch (hullDurability)
-        {
-            case 3:
-            default:
-                condition = "<color=green>Perfect</color>";
-                break;
-            case 2:
-                condition = "<color=yellow>Damaged</color>";
-                break;
-            case 1:
-                condition = "<color=red>Critical</color>";
-                break;
-            case 0:
-                condition = "<color=red>Lost</color>";
-                break;
-        }
-
-        hullCondition.text = "Hull Condition: " + condition;
         depthText.text = "Depth: " + currentDepth.ToString("f0") + "m";
         speedText.text = "Descend rate: " + currentSpeed.ToString("f0") + "m/s";
     }
@@ -217,13 +198,40 @@ public class GameManager : MonoBehaviour
     public void Damaged()
     {
         hullDurability -= 1;
-        TimCameraController.instance.Shake(.2f, 5f, .5f, 1);
+        string condition = "";
+        switch (hullDurability)
+        {
+            case 3:
+                condition = "<color=green>Hull Condition: Perfect</color>";
+                AudioManager.instance.PlaySound("sfx_damaged1", AudioManager.Chanel.SFX_2);
+                TimCameraController.instance.Shake(.2f, 1.5f, .5f, 1);
+                break;
+            case 2:
+                condition = "<color=yellow>Hull Condition: Damaged</color>";
+                AudioManager.instance.PlaySound("sfx_damaged2", AudioManager.Chanel.SFX_2);
+                TimCameraController.instance.Shake(.2f, 3f, .5f, 1);
+                break;
+            case 1:
+                condition = "<color=red>Hull Condition: Critical</color>";
+                AudioManager.instance.PlaySound("sfx_damaged3", AudioManager.Chanel.SFX_2);
+                TimCameraController.instance.Shake(.2f, 5f, .5f, 1);
+                break;
+            case 0:
+            default:
+                condition = "<color=red>Hull Condition: Lost</color>";
+                AudioManager.instance.PlaySound("sfx_damaged3", AudioManager.Chanel.SFX_2);
+                TimCameraController.instance.Shake(.2f, 2f, .5f, 1);
+                break;
+        }
+
+        hullCondition.text = condition;
         testDamage = false; //delete this
     }
     public bool testRepair = false; //delete this
     public void Repaired()
     {
         hullDurability = 3;
+        hullCondition.text = "<color=green>Hull Condition: Perfect</color>";
         testRepair = false; //delete this
     }
 
