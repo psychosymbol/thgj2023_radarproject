@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/SafeAndSound.unity
+    guid: d72614fe8076c2f4eb95a3fa57506691
+  - enabled: 1
     path: Assets/Scenes/sc_testRadar 2.unity
     guid: d36cc196243f142429e9f002e0c879b2
   m_configObjects: {}

@@ -2,12 +2,19 @@ using DigitalRuby.Tween;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using TMPro;
 
 public class GameManager : MonoBehaviour
 {
 
     public static GameManager instance;
+
+    public TextMeshPro depthResultText;
+    public TextMeshPro repairResultText;
+    public TextMeshPro finalResultText;
+    public int repairCount = 0;
 
     public RadarController radarController;
     public RadarGridController radarGridController;
@@ -50,7 +57,6 @@ public class GameManager : MonoBehaviour
     bool isDRTweening = false;
     bool isDescendTweening = false;
 
-
     public bool bothScanFlag = false;
     // dice roller flash
     bool flashLightSwitch = false;
@@ -70,7 +76,9 @@ public class GameManager : MonoBehaviour
     bool isFlashStationIcon = false;
     public float stationStopDuration = 10;
     public GameObject stationTransferIcon;
+    public GameObject endgameKindle;
 
+    public bool gameOver = false;
     private void Awake()
     {
         if (instance == null)
@@ -86,13 +94,73 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        StartCoroutine(fadeIn());
+    }
 
+    public Image fade;
+    public IEnumerator fadeIn()
+    {
+        float fader = 1;
+        while (fader > 0)
+        {
+            fader -= Time.deltaTime;
+            fade.color = new Color(fade.color.r, fade.color.g, fade.color.b, fader);
+            yield return null;
+        }
+        fade.color = new Color(fade.color.r, fade.color.g, fade.color.b, 0);
+    }
+
+    public void restartGame()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    public IEnumerator fadeOut()
+    {
+        float fader = 0;
+        while (fader < 1)
+        {
+            fader += Time.deltaTime;
+            fade.color = new Color(fade.color.r, fade.color.g, fade.color.b, fader);
+            yield return null;
+        }
+
+        fade.color = new Color(fade.color.r, fade.color.g, fade.color.b, 1);
+        showResult();
+    }
+
+    public void showResult()
+    {
+        System.Action<ITween<float>> onUpdate = (t) =>
+        {
+            endgameKindle.transform.localPosition = Vector3.Lerp(new Vector3(0, -3f, 1.75f), new Vector3(0, -.75f, 1.75f), t.CurrentProgress);
+        };
+
+        System.Action<ITween<float>> onComplete = (t) =>
+        {
+            endgameKindle.transform.localPosition = new Vector3(0, -.75f, 1.75f);
+
+        };
+
+        endgameKindle.gameObject.Tween(
+            "kindleTween",
+            0,
+            1,
+            .5f,
+            TweenScaleFunctions.QuadraticEaseOut,
+            onUpdate,
+            onComplete
+            );
     }
 
     void UpdateText()
     {
         depthText.text = "Depth: " + currentDepth.ToString("f0") + "m";
         speedText.text = "Descend rate: " + currentSpeed.ToString("f0") + "m/s";
+        depthResultText.text = "Depth traveled: " + currentDepth.ToString("f0") + "m";
+        repairResultText.text = "Repair cost: -" + (repairCount * 100).ToString("f0") + ".pt";
+        float finalscore = currentDepth - (repairCount * 100);
+        finalResultText.text = "Final score: " + finalscore.ToString("f0") + "m";
     }
 
     // Update is called once per frame
@@ -183,6 +251,9 @@ public class GameManager : MonoBehaviour
                 Repaired();
                 DiceRoller_broke.GetComponent<DiceRollerController_Broke>().RestoreRandomCount();
                 stationTransferIcon.SetActive(false);
+                DiceRoller_normal.changeDiceFace(1);
+                DiceRoller_broke.changeDiceFace(1);
+                UpdateScanStatus();
                 AudioManager.instance.PlaySound("sfx_finishdocking", AudioManager.Chanel.SFX_2);
                 stationStop = false;
             }
@@ -215,6 +286,7 @@ public class GameManager : MonoBehaviour
                 condition = "<color=red>Hull Condition: Lost</color>";
                 AudioManager.instance.PlaySound("sfx_damaged3", AudioManager.Chanel.SFX_2);
                 TimCameraController.instance.Shake(.2f, 2f, .5f, 1);
+                StartCoroutine(fadeOut());
                 break;
         }
         Flash.instance.doflash();
@@ -222,6 +294,7 @@ public class GameManager : MonoBehaviour
     }
     public void Repaired()
     {
+        repairCount += (3 - hullDurability);
         hullDurability = 3;
         hullCondition.text = "<color=green>Hull Condition: Perfect</color>";
     }
