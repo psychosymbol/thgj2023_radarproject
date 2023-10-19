@@ -731,7 +731,7 @@ GameObject:
   - component: {fileID: 118485289}
   - component: {fileID: 118485288}
   m_Layer: 6
-  m_Name: dethText  (1)
+  m_Name: conditionText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -750,7 +750,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1944057262}
-  m_RootOrder: 8
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -777,7 +777,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Hull integrity: 100%'
+  m_text: 'Hull Condition: Perfect'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2313,7 +2313,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1944057262}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3774,7 +3774,7 @@ Transform:
   m_Children:
   - {fileID: 193132674}
   m_Father: {fileID: 1944057262}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &803968028
 GameObject:
@@ -6756,12 +6756,14 @@ MonoBehaviour:
   distractLight: {fileID: 1292962740}
   mat_on: {fileID: 2100000, guid: fe216b7abec341148933c8be6049558a, type: 2}
   mat_off: {fileID: 2100000, guid: 485647c666cc4734cbc3c6c9ed7dc1a3, type: 2}
+  hullDurability: 3
   currentDepth: 250
   descendSpeed: 24
   currentSpeed: 0
   depthToUnit: 0.1
   descending: 0
   released: 0
+  hullCondition: {fileID: 118485288}
   depthText: {fileID: 478852190}
   speedText: {fileID: 1632204026}
   bothScanFlag: 0
@@ -7056,7 +7058,7 @@ Transform:
   - {fileID: 1271597665}
   - {fileID: 900342883}
   m_Father: {fileID: 1944057262}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1517187797
 PrefabInstance:
@@ -7640,7 +7642,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1944057262}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -9665,11 +9667,11 @@ Transform:
   - {fileID: 598721155}
   - {fileID: 1001695828}
   - {fileID: 1904964032}
+  - {fileID: 118485287}
   - {fileID: 478852189}
   - {fileID: 1632204025}
   - {fileID: 794385198}
   - {fileID: 1515727396}
-  - {fileID: 118485287}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
