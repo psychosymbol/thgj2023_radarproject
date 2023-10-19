@@ -33,6 +33,8 @@ public class GameManager : MonoBehaviour
     public Material mat_on;
     public Material mat_off;
 
+    public int hullDurability = 3;
+
     public float currentDepth = 250;
     public float descendSpeed = 24; //Conventional submarines have maximum submerged speeds of 16 to 24 knots (8.x-12.x m/s)
     public float currentSpeed = 0;
@@ -41,6 +43,7 @@ public class GameManager : MonoBehaviour
 
     public bool descending = false;
     public bool released = false;
+    public TextMeshPro hullCondition;
     public TextMeshPro depthText;
     public TextMeshPro speedText;
 
@@ -88,7 +91,25 @@ public class GameManager : MonoBehaviour
 
     void UpdateText()
     {
+        string condition = "";
+        switch (hullDurability)
+        {
+            case 3:
+            default:
+                condition = "<color=green>Perfect</color>";
+                break;
+            case 2:
+                condition = "<color=yellow>Damaged</color>";
+                break;
+            case 1:
+                condition = "<color=red>Critical</color>";
+                break;
+            case 0:
+                condition = "<color=red>Lost</color>";
+                break;
+        }
 
+        hullCondition.text = "Hull Condition: " + condition;
         depthText.text = "Depth: " + currentDepth.ToString("f0") + "m";
         speedText.text = "Descend rate: " + currentSpeed.ToString("f0") + "m/s";
     }
@@ -184,7 +205,26 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        if(Input.GetKeyDown(KeyCode.Space))         //delete this
+        {                                           //delete this
+            Damaged();                              //delete this
+        }
+
         UpdateText();
+    }
+
+    public bool testDamage = false; //delete this
+    public void Damaged()
+    {
+        hullDurability -= 1;
+        TimCameraController.instance.Shake(.2f, 5f, .5f, 1);
+        testDamage = false; //delete this
+    }
+    public bool testRepair = false; //delete this
+    public void Repaired()
+    {
+        hullDurability = 3;
+        testRepair = false; //delete this
     }
 
     public void StartDocking()
@@ -217,7 +257,7 @@ public class GameManager : MonoBehaviour
         stationTime = 0;
         stationTime_interval = 0;
         stationTransferIcon.SetActive(true);
-
+        Repaired();
         radarController.StopPing();
     }
 
